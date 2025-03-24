@@ -1,0 +1,31 @@
+syntax = "proto3";
+
+service L2Service {
+    // ask if link is able to be established
+    rpc  LinkEstablish(LinkEstablishRequest) returns (LinkEstablishResponse) {}
+}
+
+message LinkEstablishRequest {
+    string link_initiator_address = 1;
+    string link_responder_address = 2;
+}
+
+message LinkEstablishResponse {
+    string link_initiator_address = 1;
+    string link_responder_address = 2;
+    bool accept = 3;
+    string message = 4;
+}
+
+service L1Notification {
+    // execute device operation
+    rpc ExecuteDeviceOperation(ExecuteDeviceOperationRequest) returns (ExecuteDeviceOperationResponse) {}
+}
+
+message ExecuteDeviceOperationRequest {
+    string device_setting = 1;
+}
+
+message ExecuteDeviceOperationResponse {
+    string accept = 1;
+}

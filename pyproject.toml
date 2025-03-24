@@ -1,0 +1,41 @@
+[project]
+name = "protocol-dev"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "zigen", email = "hrlclb@gmail.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "grpcio-tools>=1.60.1",
+    "grpcio>=1.60.1",
+    "pydantic>=2.6.0",
+    "pyyaml>=6.0.1",
+    "rich>=13.7.0",
+    "python-daemon>=3.0.1",
+    "asyncio>=3.4.3",
+]
+
+[tool.uv]
+package = true
+
+[project.scripts]
+protocol-dev = "src.main:run"
+
+[dependency-groups]
+dev = [
+    "black>=24.8.0",
+    "coverage>=7.6.1",
+    "grpc-stubs>=1.53.0.5",
+    "grpcio-testing>=1.63.0",
+    "mypy>=1.11.2",
+    "pytest-cov>=4.1.0",
+    "pytest-mock>=3.12.0",
+    "pytest>=8.0.2",
+    "ruff>=0.7.4",
+    "types-pyyaml>=6.0.12.20241221",
+    "watchdog[watchmedo]>=3.0.0",
+    "pylint>=3.3.3",
+    "isort>=5.13.2",
+]
