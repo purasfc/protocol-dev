@@ -6,7 +6,7 @@ readme = "README.md"
 authors = [
     { name = "zigen", email = "hrlclb@gmail.com" }
 ]
-requires-python = ">=3.12"
+requires-python = ">=3.13"
 dependencies = [
     "grpcio-tools>=1.60.1",
     "grpcio>=1.60.1",
@@ -14,6 +14,7 @@ dependencies = [
     "pyyaml>=6.0.1",
     "rich>=13.7.0",
     "python-daemon>=3.0.1",
+    "pnpq @ git+https://github.com/moonshot-nagayama-pj/PnPQ.git",
     "asyncio>=3.4.3",
 ]
 
