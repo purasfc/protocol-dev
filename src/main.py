@@ -30,8 +30,13 @@ async def serve(
      config: Config
 ):
     server = grpc.aio.server()
-    add_L2ServiceServicer_to_server(Layer2Service(config=config), server)
-    add_L1NotificationServicer_to_server(Layer1Service(), server)
+    if config.node_name == "central_manager":
+        # only central manager need L2service
+        add_L2ServiceServicer_to_server(Layer2Service(config=config), server)
+        add_L1NotificationServicer_to_server(Layer1Service(), server)
+    else:
+        
+        add_L1NotificationServicer_to_server(Layer1Service(), server)
     server_address = config.grpc_server_address
     server.add_insecure_port(server_address)
     await server.start()
@@ -40,7 +45,6 @@ async def serve(
     
 
 def run(): 
-    logger.info("succeeded in running main")
     parser = ArgumentParser(
         "testbed_node program",
         usage="start testbed node server",
