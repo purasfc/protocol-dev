@@ -16,6 +16,8 @@ from typing import Deque
 import logging
 import uuid
 import sys
+from random import random
+
 from config import Config
 
 
@@ -126,7 +128,7 @@ class Layer2Service(L2ServiceServicer):
         task = Task(
             id=task_id,
             time_start=start_time,
-            timeout=10,
+            timeout=int(random(1,10)),
             pair=[initiator, responder],
             device_operations=[initiator_operation_task, responder_operation_task]
         )
@@ -136,10 +138,13 @@ class Layer2Service(L2ServiceServicer):
         logger.info(f"Task scheduled: {task}")
         logger.info(f"Global queue: {list(self.global_schedule)}")
         logger.info(f"Node schedules: {dict(self.node_schedules)}")
+        
+        await self.run_task(task)
+        success = all(op.success for op in task.device_operations)
 
         return LinkEstablishResponse(
             link_initiator_address=initiator,
             link_responder_address=responder,
-            accept=True,
-            message="Link Established"
+            accept=success,
+            message="Link Established" if success else "Task Execution failed"
         )
