@@ -38,7 +38,7 @@ class Config(BaseModel):
     node_address: str
     grpc_server_address: str = Field(default="[::]:50051")
     participants: dict[str, str] = Field(default=None)
-    devices: list[DeviceConfig]
+    devices: list[DeviceConfig] | None = Field(default=None)
 
 
 def load_config(input_file: typing.TextIO) -> Config:

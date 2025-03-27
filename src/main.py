@@ -35,7 +35,6 @@ async def serve(
         add_L2ServiceServicer_to_server(Layer2Service(config=config), server)
         add_L1NotificationServicer_to_server(Layer1Service(), server)
     else:
-        
         add_L1NotificationServicer_to_server(Layer1Service(), server)
     server_address = config.grpc_server_address
     server.add_insecure_port(server_address)
