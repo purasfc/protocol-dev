@@ -4,7 +4,7 @@ import json
 @dataclass
 class OperationTask:
     id: int
-    node: str
+    target_node: str
     start_time: int
     end_time: int
     success: bool = False

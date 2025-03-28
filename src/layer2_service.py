@@ -43,7 +43,7 @@ class Layer2Service(L2ServiceServicer):
             "nodeA": deque(),
             "nodeB": deque(),
             "nodeC": deque(),
-            "switch": deque()
+            "bsa": deque()
         }
 
     async def LinkEstablish(self, request, context) -> LinkEstablishResponse:
@@ -55,22 +55,23 @@ class Layer2Service(L2ServiceServicer):
         initiator = request.link_initiator_address.strip().replace(',', '')
         responder = request.link_responder_address.strip().replace(',', '')
 
+        start_time = time.time()
+        task_id = str(uuid.uuid4())
+        
         if initiator not in self.node_schedules:
             context.set_code(grpc.StatusCode.INVALID_ARGUMENT)
             context.set_details(f"Invalid initiator: {initiator}")
             return LinkEstablishResponse(
+                task_id=task_id,
                 link_initiator_address=initiator,
                 link_responder_address=responder,
                 accept=False,
                 message="Invalid initiator"
             )
 
-        start_time = time.time()
-        task_id = str(uuid.uuid4())
-
         initiator_operation_task = OperationTask(
             id=task_id,
-            node=responder,
+            target_node=responder,
             start_time=start_time,
             end_time=start_time + 3,
             success=False
@@ -78,14 +79,13 @@ class Layer2Service(L2ServiceServicer):
 
         responder_operation_task = OperationTask(
             id=task_id,
-            node=initiator,
+            target_node=initiator,
             start_time=start_time,
             end_time=start_time + 3,
             success=False
         )
         
         
-
         task = Task(
             id=task_id,
             time_start=start_time,
@@ -95,23 +95,7 @@ class Layer2Service(L2ServiceServicer):
             device_operations=[initiator_operation_task, responder_operation_task]
         )
 
-
-        await self.task_manager.schedule_task(task)
+        response =  await self.task_manager.schedule_task(task)
         
-        start_time = time.time()
-        while time.time() - start_time < task.timeout:
-            # すべてのタスクのsuccessがTrueかどうかをチェック
-            if all(op.success for op in task.device_operations):
-                success = True
-                break
-            else:
-                success = False
-            await asyncio.sleep(0.5)  # 0.5秒ごとにチェック
-        else:    
-            success = False
-        return LinkEstablishResponse(
-            link_initiator_address=initiator,
-            link_responder_address=responder,
-            accept=success,
-            message="Link Established" if success else "Task execution failed"
-        )
+        return response
+        

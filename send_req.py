@@ -18,13 +18,18 @@ async def send_req(
     channel = grpc.aio.insecure_channel(f"{host}:{port}")
     stub = L2ServiceStub(channel)
     
-    response = await stub.LinkEstablish(
-        LinkEstablishRequest(
-            link_initiator_address=initiator,
-            link_responder_address=responder
+    logger.info(f"initiator: {initiator}, responder: {responder}")
+    
+    try:
+        response = await stub.LinkEstablish(
+            LinkEstablishRequest(
+                link_initiator_address=initiator,
+                link_responder_address=responder
+            )
         )
-    )
-    print(response)
+        print(response)
+    except Exception as e:
+        logger.error(f"Error requesting link establishment: {e}")
 
 if __name__ == "__main__":
     parser = ArgumentParser("CLI client to send request for testbed_node")
